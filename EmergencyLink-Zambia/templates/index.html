@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmergencyLink Zambia</title>
+    <!-- Link to our CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Google Fonts for a professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">EmergencyLink Zambia</div>
+        <div class="nav-links">
+            <a href="#" class="nav-item">How it Works</a>
+            <a href="/responder/login" class="nav-item responder-link">Responder Login</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Main Content) -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>When Every Second Matters.</h1>
+            <p class="subtitle">Fast, reliable emergency reporting for Zambia.</p>
+            
+            <div class="action-area">
+                <p class="instruction">In an emergency? Press the button below.</p>
+                <!-- This button links to the emergency form we will build next -->
+                <a href="/emergency" class="emergency-btn">REQUEST EMERGENCY HELP</a>
+            </div>
+
+            <div class="disclaimer">
+                <strong>⚠️ Prototype Disclaimer:</strong> This is a university hackathon prototype. 
+                In a real life-threatening situation, please contact official Zambian emergency services directly.
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature-card">
+            <h3>📍 GPS Location</h3>
+            <p>Automatically shares your exact coordinates with responders.</p>
+        </div>
+        <div class="feature-card">
+            <h3>⚡ Instant Alert</h3>
+            <p>Notifies nearby responder units immediately upon submission.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🔄 Real-Time Status</h3>
+            <p>Track the status of your request from Requested to Resolved.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 EmergencyLink Zambia | Northrise University Hackathon Project</p>
+    </footer>
+
+</body>
+</html>

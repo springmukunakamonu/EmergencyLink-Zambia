@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Emergency - EmergencyLink Zambia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Import Poppins font for a more modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-shield-alt"></i> EmergencyLink Zambia</div>
+        <a href="/" class="nav-item"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </nav>
+
+    <div class="form-container">
+        <h2><i class="fas fa-exclamation-triangle" style="color: #D32F2F;"></i> Request Emergency Help</h2>
+        <p class="form-subtitle">Tell us what happened and your location. Help is on the way.</p>
+
+        <form id="emergencyForm">
+            
+            <!-- 1. EMERGENCY TYPE CARDS -->
+            <div class="form-group">
+                <label>1. Select Emergency Type *</label>
+                <div class="emergency-type-grid">
+                    <div class="type-card" data-value="Medical">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Medical</span>
+                    </div>
+                    <div class="type-card" data-value="Road Accident">
+                        <i class="fas fa-car-crash"></i>
+                        <span>Road Accident</span>
+                    </div>
+                    <div class="type-card" data-value="Fire">
+                        <i class="fas fa-fire"></i>
+                        <span>Fire</span>
+                    </div>
+                    <div class="type-card" data-value="Security">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Security</span>
+                    </div>
+                    <div class="type-card" data-value="Other">
+                        <i class="fas fa-ellipsis-h"></i>
+                        <span>Other</span>
+                    </div>
+                </div>
+                <!-- Hidden input to store selected value for form submission -->
+                <input type="hidden" id="type" name="type" required>
+                <p id="typeError" class="error-text" style="display:none;">Please select an emergency type.</p>
+            </div>
+
+            <!-- 2. DESCRIPTION -->
+            <div class="form-group">
+                <label for="description">2. Description (Optional)</label>
+                <textarea id="description" name="description" rows="3" placeholder="Briefly describe what happened... e.g., Two cars collided near Mindolo junction"></textarea>
+            </div>
+
+            <!-- 3. USER INFO -->
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g. John Mwansa">
+                </div>
+                <div class="form-group half">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" placeholder="e.g. 0977123456" required>
+                </div>
+            </div>
+
+            <!-- 4. LOCATION -->
+            <div class="form-group location-group">
+                <label>4. Location (GPS)</label>
+                <div class="location-inputs">
+                    <input type="text" id="latitude" name="latitude" placeholder="Lat" readonly>
+                    <input type="text" id="longitude" name="longitude" placeholder="Long" readonly>
+                </div>
+                <button type="button" id="getLocationBtn" class="secondary-btn">
+                    <i class="fas fa-map-marker-alt"></i> Get My Current Location
+                </button>
+                <p id="locationStatus" class="status-text"></p>
+                <p class="manual-location-link">If location cannot be detected, you can enter manually. <a href="#" style="color:#002B5C;">Enter location manually</a></p>
+            </div>
+
+            <button type="submit" class="emergency-btn submit-btn">
+                <i class="fas fa-paper-plane"></i> Send Emergency Request
+            </button>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

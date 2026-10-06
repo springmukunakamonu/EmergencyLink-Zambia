@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responder Dashboard - EmergencyLink Zambia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo"><i class="fas fa-shield-alt"></i> EmergencyLink</div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-link active" onclick="switchTab('overview')"><i class="fas fa-tachometer-alt"></i> Overview</a>
+            <a href="#" class="nav-link" onclick="switchTab('map')"><i class="fas fa-map-marked-alt"></i> Map View</a>
+            <a href="#" class="nav-link" onclick="switchTab('history')"><i class="fas fa-history"></i> History</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h2 id="pageTitle">Overview</h2>
+            <div class="user-info"><i class="fas fa-user-circle"></i> Ahmed Banda <span class="badge">Responder</span></div>
+        </header>
+
+        <!-- STATS CARDS (Visible on all tabs) -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-info"><h3>Total</h3><span id="totalCount">0</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-clock"></i></div>
+                <div class="stat-info"><h3>Active</h3><span id="activeCount">0</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-info"><h3>Resolved</h3><span id="resolvedCount">0</span></div>
+            </div>
+        </div>
+
+        <!-- LAYER 1: OVERVIEW TAB -->
+        <div id="tab-overview" class="tab-content active-tab">
+            <div class="content-grid">
+                <div class="card table-card">
+                    <div class="card-header"><h3>Active Emergencies</h3></div>
+                    <div class="table-responsive">
+                        <table id="emergencyTable">
+                            <thead>
+                                <tr><th>ID</th><th>Type</th><th>Description</th><th>Location</th><th>Time</th><th>Status</th><th>Action</th></tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card map-card">
+                    <div class="card-header"><h3>Live Incident Map</h3></div>
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 2: MAP VIEW TAB -->
+        <div id="tab-map" class="tab-content">
+            <div class="card" style="height: calc(100vh - 250px);">
+                <div class="card-header"><h3>Full Screen Map View</h3></div>
+                <div id="fullMap" style="height: calc(100% - 60px); border-radius: 0 0 12px 12px;"></div>
+            </div>
+        </div>
+
+        <!-- LAYER 3: HISTORY TAB -->
+        <div id="tab-history" class="tab-content">
+            <div class="card">
+                <div class="card-header"><h3>Resolved Emergencies</h3></div>
+                <div class="table-responsive">
+                    <table id="historyTable">
+                        <thead>
+                            <tr><th>ID</th><th>Type</th><th>User</th><th>Resolved At</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

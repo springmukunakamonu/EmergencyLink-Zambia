@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responder Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body style="background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh;">
+
+    <div class="form-container" style="max-width: 400px;">
+        <h2 style="text-align: center; color: #002B5C;">Responder Access</h2>
+        <p style="text-align: center; margin-bottom: 20px; font-size: 0.9rem;">Authorized personnel only.</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="secondary-btn" style="width: 100%; background-color: #002B5C;">Login</button>
+            <p id="loginError" style="color: red; text-align: center; margin-top: 10px; display: none;">Invalid credentials.</p>
+        </form>
+        
+        <div style="margin-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            <strong>Demo Credentials:</strong><br>
+            User: admin<br>
+            Pass: 1234
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Simple demo check (In production, this happens on the server!)
+            if (user === 'admin' && pass === '1234') {
+                window.location.href = '/dashboard';
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

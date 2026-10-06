@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responder Dashboard - EmergencyLink Zambia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <i class="fas fa-shield-alt"></i> EmergencyLink
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="#" class="nav-link"><i class="fas fa-list-ul"></i> All Emergencies</a>
+            <a href="#" class="nav-link"><i class="fas fa-map-marked-alt"></i> Map View</a>
+            <a href="#" class="nav-link"><i class="fas fa-history"></i> History</a>
+            <a href="#" class="nav-link"><i class="fas fa-user-cog"></i> Profile</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <header class="dashboard-header">
+            <h2>Responder Dashboard</h2>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i> Ahmed Banda <span class="badge">Responder</span>
+            </div>
+        </header>
+
+        <!-- STATS CARDS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-info">
+                    <h3>Total Emergencies</h3>
+                    <span id="totalCount">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-clock"></i></div>
+                <div class="stat-info">
+                    <h3>Active Emergencies</h3>
+                    <span id="activeCount">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-info">
+                    <h3>Resolved</h3>
+                    <span id="resolvedCount">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
+                <div class="stat-info">
+                    <h3>New Notifications</h3>
+                    <span id="notifCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE & MAP GRID -->
+        <div class="content-grid">
+            <!-- EMERGENCY TABLE -->
+            <div class="card table-card">
+                <div class="card-header">
+                    <h3>Active Emergencies</h3>
+                    <button class="btn-sm"><i class="fas fa-filter"></i> Filter</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="emergencyTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Location</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LIVE MAP -->
+            <div class="card map-card">
+                <div class="card-header">
+                    <h3>Live Incident Map</h3>
+                    <div class="map-tabs">
+                        <span class="tab active">Map</span>
+                        <span class="tab">Satellite</span>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- LEAFLET JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- DASHBOARD LOGIC -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
