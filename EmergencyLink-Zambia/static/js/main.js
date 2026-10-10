@@ -6,10 +6,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const getLocationBtn = document.getElementById('getLocationBtn');
     const latInput = document.getElementById('latitude');
     const longInput = document.getElementById('longitude');
+    const locationNameInput = document.getElementById('locationName');
     const statusText = document.getElementById('locationStatus');
 
+    async function reverseGeocode(lat, lng) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    'Accept-Language': 'en'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Location lookup failed');
+            }
+
+            const data = await response.json();
+            const address = data.address || {};
+            const parts = [
+                address.amenity,
+                address.road,
+                address.neighbourhood,
+                address.suburb,
+                address.city || address.town || address.village,
+                address.state,
+                address.country
+            ].filter(Boolean);
+
+            return parts.length ? parts.join(', ') : `Lat ${lat.toFixed(5)}, Lon ${lng.toFixed(5)}`;
+        } catch (error) {
+            console.error('Reverse geocoding failed:', error);
+            return `Lat ${lat.toFixed(5)}, Lon ${lng.toFixed(5)}`;
+        }
+    }
+
     if (getLocationBtn) {
-        getLocationBtn.addEventListener('click', function() {
+        getLocationBtn.addEventListener('click', async function() {
             if (!navigator.geolocation) {
                 statusText.textContent = "Geolocation is not supported by your browser.";
                 statusText.style.color = "red";
@@ -20,9 +54,17 @@ document.addEventListener('DOMContentLoaded', function() {
             statusText.style.color = "#002B5C";
             
             navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    latInput.value = position.coords.latitude.toFixed(6);
-                    longInput.value = position.coords.longitude.toFixed(6);
+                async function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    latInput.value = lat.toFixed(6);
+                    longInput.value = lng.toFixed(6);
+
+                    const placeName = await reverseGeocode(lat, lng);
+                    if (locationNameInput) {
+                        locationNameInput.value = placeName;
+                    }
+
                     statusText.textContent = "✅ Location captured successfully!";
                     statusText.style.color = "green";
                 },
@@ -81,7 +123,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
                 latitude: latInput.value || null,
-                longitude: longInput.value || null
+                longitude: longInput.value || null,
+                location_name: locationNameInput ? locationNameInput.value : null
             };
 
             fetch('/submit_emergency', {

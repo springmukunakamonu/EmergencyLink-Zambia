@@ -5,46 +5,291 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responder Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body style="background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f2f7ff 0%, #edf3fa 100%);
+        }
 
-    <div class="form-container" style="max-width: 400px;">
-        <h2 style="text-align: center; color: #002B5C;">Responder Access</h2>
-        <p style="text-align: center; margin-bottom: 20px; font-size: 0.9rem;">Authorized personnel only.</p>
-        
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" required>
+        .login-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 16px;
+        }
+
+        .login-card {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            width: min(980px, 100%);
+            background: #fff;
+            border: 1px solid #e7edf7;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(7, 43, 77, 0.12);
+        }
+
+        .login-panel {
+            background: linear-gradient(135deg, #072b4d 0%, #144a7a 100%);
+            color: white;
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-panel .pill {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.14);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 20px;
+        }
+
+        .login-panel h1 {
+            font-size: clamp(2rem, 3vw, 2.7rem);
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -0.04em;
+        }
+
+        .login-panel p {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 22px;
+        }
+
+        .info-points {
+            display: grid;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.92);
+            font-size: 0.95rem;
+        }
+
+        .info-item i {
+            color: #8de6b3;
+        }
+
+        .form-panel {
+            padding: 40px 32px;
+        }
+
+        .form-panel h2 {
+            color: #072b4d;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            letter-spacing: -0.04em;
+        }
+
+        .form-panel .subtitle {
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #dfe7f1;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #f9fbff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0a5fbd;
+            box-shadow: 0 0 0 4px rgba(10,95,189,0.08);
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #dfe7f1;
+            border-radius: 12px;
+            font: inherit;
+            font-size: 1rem;
+            background: #f9fbff;
+            color: #334155;
+        }
+
+        .eligibility-note {
+            margin: -6px 0 18px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid #dceaf6;
+            background: #f2f8fd;
+            color: #45647f;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 0.95rem 1rem;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #0f4c81, #072b4d);
+            color: white;
+        }
+
+        .secondary-btn {
+            background: #eef3fb;
+            color: #072b4d;
+            border: 1px solid #dfeaf5;
+        }
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .error-box {
+            margin-top: 18px;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            color: #b42318;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            display: none;
+        }
+
+        .subtle {
+            margin-top: 18px;
+            font-size: 0.82rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .subtle strong {
+            color: #072b4d;
+        }
+
+        @media (max-width: 760px) {
+            .login-card {
+                grid-template-columns: 1fr;
+            }
+
+            .login-panel,
+            .form-panel {
+                padding: 28px 20px;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <div class="login-card">
+            <div class="login-panel">
+                <div class="pill"><i class="fas fa-shield-alt"></i> Secure access</div>
+                <h1>Responder operations portal</h1>
+                <p>Access is for emergency response personnel working with a clinic, police service, or fire service.</p>
+
+                <div class="info-points">
+                    <div class="info-item"><i class="fas fa-check-circle"></i> Live emergency updates</div>
+                    <div class="info-item"><i class="fas fa-check-circle"></i> GPS-aware incident coordination</div>
+                    <div class="info-item"><i class="fas fa-check-circle"></i> Rapid status updates</div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" required>
+
+            <div class="form-panel">
+                <h2>Sign in</h2>
+                <p class="subtitle">Enter your responder login details below.</p>
+
+                <form method="post" action="{{ url_for('responder_login') }}">
+                    <div class="form-group">
+                        <label for="full_name">Full name</label>
+                        <input type="text" id="full_name" name="full_name" placeholder="e.g. Grace Mwiinga">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service_type">Responder service</label>
+                        <select id="service_type" name="service_type">
+                            <option value="">Choose your service</option>
+                            <option value="Clinic">Clinic / Health facility</option>
+                            <option value="Police">Police service</option>
+                            <option value="Fire Service">Fire service</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="organization">Organization name</label>
+                        <input type="text" id="organization" name="organization" placeholder="e.g. Kabulonga Clinic">
+                    </div>
+
+                    <p class="eligibility-note">
+                        New accounts must select Clinic, Police, or Fire Service and name their organization. Service affiliation is self-reported; only register for an organization you are authorized to represent.
+                    </p>
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter password" required>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="submit" class="primary-btn" name="action" value="login">Login</button>
+                        <button type="submit" class="secondary-btn" name="action" value="register">Create account</button>
+                    </div>
+                </form>
+
+                {% if error %}
+                    <div class="error-box" style="display: block;">{{ error }}</div>
+                {% endif %}
+
             </div>
-            <button type="submit" class="secondary-btn" style="width: 100%; background-color: #002B5C;">Login</button>
-            <p id="loginError" style="color: red; text-align: center; margin-top: 10px; display: none;">Invalid credentials.</p>
-        </form>
-        
-        <div style="margin-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
-            <strong>Demo Credentials:</strong><br>
-            User: admin<br>
-            Pass: 1234
         </div>
     </div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-
-            // Simple demo check (In production, this happens on the server!)
-            if (user === 'admin' && pass === '1234') {
-                window.location.href = '/dashboard';
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
-        });
-    </script>
 </body>
 </html>

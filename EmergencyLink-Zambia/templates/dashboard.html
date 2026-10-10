@@ -15,17 +15,15 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <i class="fas fa-shield-alt"></i> EmergencyLink
+            <i class="fas fa-shield-heart"></i><span>EmergencyLink</span>
         </div>
         <nav class="sidebar-nav">
-            <a href="#" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-            <a href="#" class="nav-link"><i class="fas fa-list-ul"></i> All Emergencies</a>
-            <a href="#" class="nav-link"><i class="fas fa-map-marked-alt"></i> Map View</a>
-            <a href="#" class="nav-link"><i class="fas fa-history"></i> History</a>
-            <a href="#" class="nav-link"><i class="fas fa-user-cog"></i> Profile</a>
+            <a href="#emergencyTable" class="nav-link active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            <a href="#emergencyTable" class="nav-link"><i class="fas fa-list-ul"></i><span>All Emergencies</span></a>
+            <a href="#map" class="nav-link"><i class="fas fa-map-marked-alt"></i><span>Live map</span></a>
         </nav>
         <div class="sidebar-footer">
-            <a href="/" class="nav-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="{{ url_for('logout') }}" class="nav-link logout"><i class="fas fa-sign-out-alt"></i><span>Sign out</span></a>
         </div>
     </aside>
 
@@ -33,11 +31,31 @@
     <main class="main-content">
         <!-- HEADER -->
         <header class="dashboard-header">
-            <h2>Responder Dashboard</h2>
-            <div class="user-info">
-                <i class="fas fa-user-circle"></i> Ahmed Banda <span class="badge">Responder</span>
+            <div class="dashboard-title">
+                <p class="dashboard-eyebrow">EmergencyLink Zambia / Responder workspace</p>
+                <h2>Responder Dashboard</h2>
             </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span>{{ session.get('responder_name', 'Responder') }}</span>
+                <span class="badge">{{ session.get('responder_service', 'Responder') }}</span>
+                {% if session.get('responder_organization') %}
+                    <span class="organization-label">{{ session.get('responder_organization') }}</span>
+                {% endif %}
+            </div>
+            <button type="button" id="soundToggle" class="sound-toggle" aria-pressed="false">
+                <i class="fas fa-volume-xmark" aria-hidden="true"></i>
+                <span>Enable sound alerts</span>
+            </button>
         </header>
+
+        <div id="emergencyAlert" class="emergency-alert" role="alert" aria-live="assertive" hidden>
+            <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+            <span id="emergencyAlertText"></span>
+            <button type="button" id="dismissEmergencyAlert" aria-label="Dismiss emergency alert">
+                <i class="fas fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
 
         <!-- STATS CARDS -->
         <div class="stats-grid">

@@ -13,12 +13,21 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo"><i class="fas fa-shield-alt"></i> EmergencyLink Zambia</div>
+        <a href="/" class="logo-wrap">
+            <span class="logo-icon"><i class="fas fa-shield-heart"></i></span>
+            <span class="logo">EmergencyLink Zambia</span>
+        </a>
         <a href="/" class="nav-item"><i class="fas fa-arrow-left"></i> Back to Home</a>
     </nav>
 
     <div class="form-container">
-        <h2><i class="fas fa-exclamation-triangle" style="color: #D32F2F;"></i> Request Emergency Help</h2>
+        <div class="form-heading">
+            <span class="form-heading-icon"><i class="fas fa-triangle-exclamation"></i></span>
+            <div>
+                <p class="eyebrow">Emergency report</p>
+                <h2>Request emergency help</h2>
+            </div>
+        </div>
         <p class="form-subtitle">Tell us what happened and your location. Help is on the way.</p>
 
         <form id="emergencyForm">
@@ -78,6 +87,7 @@
                     <input type="text" id="latitude" name="latitude" placeholder="Lat" readonly>
                     <input type="text" id="longitude" name="longitude" placeholder="Long" readonly>
                 </div>
+                <input type="text" id="locationName" name="location_name" class="location-name-input" placeholder="Location name will appear here" readonly>
                 <button type="button" id="getLocationBtn" class="secondary-btn">
                     <i class="fas fa-map-marker-alt"></i> Get My Current Location
                 </button>

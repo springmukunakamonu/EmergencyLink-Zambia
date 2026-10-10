@@ -3,9 +3,10 @@
 import sqlite3
 import uuid
 from datetime import datetime
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 
 app = Flask(__name__)
+app.secret_key = 'emergencylink-zambia-secret-key'
 
 # --- DATABASE SETUP ---
 DATABASE = 'instance/emergencylink.db'
@@ -15,6 +16,7 @@ def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row  # Allows us to access columns by name
     return conn
+
 
 def init_db():
     """Creates the database and tables if they don't exist."""
@@ -34,6 +36,7 @@ def init_db():
             phone TEXT NOT NULL,
             latitude REAL,
             longitude REAL,
+            location_name TEXT,
             status TEXT DEFAULT 'REQUESTED',
             created_at TEXT NOT NULL
         )
@@ -50,13 +53,63 @@ def init_db():
             FOREIGN KEY (emergency_id) REFERENCES emergencies(emergency_id)
         )
     ''')
+
+    # 3. Make sure the emergencies table includes a friendly location label.
+    emergency_columns = [row[1] for row in conn.execute('PRAGMA table_info(emergencies)').fetchall()]
+    if 'location_name' not in emergency_columns:
+        conn.execute('ALTER TABLE emergencies ADD COLUMN location_name TEXT')
+
+    # 4. Create responders table for login credentials
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS responders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            full_name TEXT,
+            service_type TEXT,
+            organization TEXT,
+            created_at TEXT NOT NULL
+        )
+    ''')
+
+    responder_columns = [row[1] for row in conn.execute('PRAGMA table_info(responders)').fetchall()]
+    if 'service_type' not in responder_columns:
+        conn.execute('ALTER TABLE responders ADD COLUMN service_type TEXT')
+    if 'organization' not in responder_columns:
+        conn.execute('ALTER TABLE responders ADD COLUMN organization TEXT')
+
+    conn.execute(
+        "DELETE FROM responders WHERE username = ? AND full_name = ? AND service_type IS NULL",
+        ('admin', 'Default Responder')
+    )
     
-    # 3. Save changes and close the connection
+    # 5. Save changes and close the connection
     conn.commit()
     conn.close()
 
+init_db()
 
 # --- ROUTES ---
+
+def is_responder_logged_in():
+    return (
+        session.get('responder_logged_in') is True
+        and session.get('responder_service') in {'Clinic', 'Police', 'Fire Service'}
+        and bool(session.get('responder_organization'))
+    )
+
+@app.before_request
+def require_responder_login_for_dashboard():
+    protected_paths = ['/dashboard', '/update_status']
+    if request.path in protected_paths:
+        if not is_responder_logged_in():
+            if request.path == '/update_status':
+                return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+            return redirect(url_for('responder_login'))
+
+    if request.path == '/api/emergencies':
+        if not is_responder_logged_in():
+            return jsonify({'error': 'Unauthorized'}), 401
 
 @app.route('/')
 def home():
@@ -79,8 +132,8 @@ def submit_emergency():
         conn = get_db_connection()
         conn.execute('''
             INSERT INTO emergencies 
-            (emergency_id, emergency_type, description, user_name, phone, latitude, longitude, created_at, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'REQUESTED')
+                (emergency_id, emergency_type, description, user_name, phone, latitude, longitude, location_name, created_at, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'REQUESTED')
         ''', (
             unique_id,
             data.get('type'),
@@ -89,8 +142,9 @@ def submit_emergency():
             data.get('phone'),
             data.get('latitude'),
             data.get('longitude'),
-            current_time
-        ))
+                data.get('location_name') or 'Unknown location',
+                current_time
+            ))
         conn.commit()
         conn.close()
         
@@ -117,14 +171,95 @@ def confirmation(emergency_id):
 
 # ... (keep previous imports and code) ...
 
-@app.route('/responder/login')
+@app.route('/responder/login', methods=['GET', 'POST'])
 def responder_login():
-    return render_template('responder_login.html')
+    if request.method == 'POST':
+        username = (request.form.get('username') or '').strip()
+        password = request.form.get('password') or ''
+        full_name = (request.form.get('full_name') or '').strip()
+        service_type = (request.form.get('service_type') or '').strip()
+        organization = (request.form.get('organization') or '').strip()
+        action = request.form.get('action')
+
+        if action == 'register':
+            if not username or not password:
+                return render_template('responder_login.html', error='Username and password are required.', is_register=True)
+            if service_type not in {'Clinic', 'Police', 'Fire Service'}:
+                return render_template(
+                    'responder_login.html',
+                    error='Choose Clinic, Police, or Fire Service to create a responder account.',
+                    is_register=True
+                )
+            if not organization:
+                return render_template(
+                    'responder_login.html',
+                    error='Enter the name of your clinic, police service, or fire service.',
+                    is_register=True
+                )
+
+            conn = get_db_connection()
+            existing = conn.execute('SELECT id FROM responders WHERE username = ?', (username,)).fetchone()
+            if existing:
+                conn.close()
+                return render_template('responder_login.html', error='That username is already taken. Please choose another one.', is_register=True)
+
+            conn.execute('''
+                INSERT INTO responders
+                    (username, password, full_name, service_type, organization, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                username,
+                password,
+                full_name or username,
+                service_type,
+                organization,
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            ))
+            conn.commit()
+            conn.close()
+            session['responder_logged_in'] = True
+            session['responder_name'] = full_name or username
+            session['responder_service'] = service_type
+            session['responder_organization'] = organization
+            return redirect(url_for('dashboard'))
+
+        conn = get_db_connection()
+        responder = conn.execute('SELECT * FROM responders WHERE username = ? AND password = ?', (username, password)).fetchone()
+        conn.close()
+
+        if (
+            responder
+            and responder['service_type'] in {'Clinic', 'Police', 'Fire Service'}
+            and responder['organization']
+        ):
+            session['responder_logged_in'] = True
+            session['responder_name'] = responder['full_name'] or responder['username']
+            session['responder_service'] = responder['service_type']
+            session['responder_organization'] = responder['organization']
+            return redirect(url_for('dashboard'))
+
+        return render_template(
+            'responder_login.html',
+            error='Invalid login or account not linked to an eligible service. Create a new eligible account.',
+            is_register=False
+        )
+
+    if is_responder_logged_in():
+        return redirect(url_for('dashboard'))
+
+    return render_template('responder_login.html', error=None, is_register=False)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('responder_login'))
 
 @app.route('/dashboard')
 def dashboard():
     """Renders the responder dashboard."""
-    return render_template('dashboard.html')
+    if not is_responder_logged_in():
+        return redirect(url_for('responder_login'))
+    return render_template('dashboard.html', responder_name=session.get('responder_name', 'Responder'))
 
 @app.route('/api/emergencies')
 def get_emergencies():
@@ -146,6 +281,7 @@ def get_emergencies():
             'phone': e['phone'],
             'latitude': e['latitude'],
             'longitude': e['longitude'],
+            'location_name': e['location_name'] or 'Unknown location',
             'status': e['status'],
             'created_at': e['created_at']
         })

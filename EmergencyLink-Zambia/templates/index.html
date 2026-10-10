@@ -4,60 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EmergencyLink Zambia</title>
-    <!-- Link to our CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Google Fonts for a professional look -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-    <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="logo">EmergencyLink Zambia</div>
+        <div class="logo-wrap">
+            <div class="logo-icon"><i class="fas fa-shield-heart"></i></div>
+            <div class="logo">EmergencyLink Zambia</div>
+        </div>
         <div class="nav-links">
-            <a href="#" class="nav-item">How it Works</a>
+            <a href="#how-it-works" class="nav-item">How it Works</a>
+            <a href="#features" class="nav-item">Features</a>
+            <a href="/dashboard" class="nav-item">Dashboard</a>
             <a href="/responder/login" class="nav-item responder-link">Responder Login</a>
         </div>
     </nav>
 
-    <!-- Hero Section (Main Content) -->
     <header class="hero">
         <div class="hero-content">
-            <h1>When Every Second Matters.</h1>
-            <p class="subtitle">Fast, reliable emergency reporting for Zambia.</p>
-            
+            <div class="hero-badge"><i class="fas fa-life-ring"></i> Fast response for critical moments</div>
+            <h1>When every second matters, help should arrive faster.</h1>
+            <p class="subtitle">EmergencyLink Zambia connects citizens with nearby responders in real time, using location-aware alerts and instant status updates.</p>
+
             <div class="action-area">
-                <p class="instruction">In an emergency? Press the button below.</p>
-                <!-- This button links to the emergency form we will build next -->
-                <a href="/emergency" class="emergency-btn">REQUEST EMERGENCY HELP</a>
+                <a href="/emergency" class="emergency-btn"><i class="fas fa-bell"></i> Request Emergency Help</a>
+                <a href="/dashboard" class="secondary-btn-home"><i class="fas fa-chart-line"></i> View Dashboard</a>
             </div>
 
-            <div class="disclaimer">
-                <strong>⚠️ Prototype Disclaimer:</strong> This is a university hackathon prototype. 
-                In a real life-threatening situation, please contact official Zambian emergency services directly.
+            <div class="hero-metrics">
+                <div>
+                    <span>24/7</span>
+                    <small>Response visibility</small>
+                </div>
+                <div>
+                    <span>GPS</span>
+                    <small>Location tracking</small>
+                </div>
+                <div>
+                    <span>Live</span>
+                    <small>Status updates</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-panel">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <span class="live-dot"></span>
+                    Active emergency alert
+                </div>
+                <div class="alert-row">
+                    <div>
+                        <small>Type</small>
+                        <strong>Medical</strong>
+                    </div>
+                    <span class="status-pill requested">Requested</span>
+                </div>
+                <div class="alert-row">
+                    <div>
+                        <small>Location</small>
+                        <strong>Lusaka Central</strong>
+                    </div>
+                    <i class="fas fa-location-dot"></i>
+                </div>
+                <div class="alert-row">
+                    <div>
+                        <small>Responder</small>
+                        <strong>Unit 07</strong>
+                    </div>
+                    <i class="fas fa-ambulance"></i>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="feature-card">
-            <h3>📍 GPS Location</h3>
-            <p>Automatically shares your exact coordinates with responders.</p>
-        </div>
-        <div class="feature-card">
-            <h3>⚡ Instant Alert</h3>
-            <p>Notifies nearby responder units immediately upon submission.</p>
-        </div>
-        <div class="feature-card">
-            <h3>🔄 Real-Time Status</h3>
-            <p>Track the status of your request from Requested to Resolved.</p>
-        </div>
-    </section>
+    <main>
+        <section id="features" class="features">
+            <div class="section-heading">
+                <p class="eyebrow">Why it works</p>
+                <h2>Built for faster, safer emergency response.</h2>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon-wrap blue"><i class="fas fa-location-crosshairs"></i></div>
+                    <h3>GPS location capture</h3>
+                    <p>Automatically shares precise location details so responder teams can reach the scene faster.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-wrap red"><i class="fas fa-bolt"></i></div>
+                    <h3>Instant emergency alerts</h3>
+                    <p>Urgent reports are submitted immediately and visible to responding teams in real time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-wrap green"><i class="fas fa-rotate"></i></div>
+                    <h3>Live status tracking</h3>
+                    <p>Citizens and responders can monitor updates from request to resolution without confusion.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="steps-section">
+            <div class="section-heading aligned-left">
+                <p class="eyebrow">How it works</p>
+                <h2>Three simple steps from alert to action.</h2>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <span class="step-number">01</span>
+                    <h3>Report</h3>
+                    <p>Tap the emergency button and submit the issue type, phone number, and location.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">02</span>
+                    <h3>Dispatch</h3>
+                    <p>Responder teams instantly receive the request with the necessary context to act.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">03</span>
+                    <h3>Track</h3>
+                    <p>Follow the emergency in real time until it is safely resolved and closed.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="cta-panel">
+                <div>
+                    <p class="eyebrow">Ready to respond?</p>
+                    <h2>Help people reach support when it matters most.</h2>
+                </div>
+                <a href="/emergency" class="emergency-btn small"><i class="fas fa-siren-on"></i> Submit request</a>
+            </div>
+        </section>
+    </main>
 
     <footer>
-        <p>&copy; 2026 EmergencyLink Zambia | Northrise University Hackathon Project</p>
+        <p>&copy; 2026 EmergencyLink Zambia | Invented by SPRING MUKUNA </p>
     </footer>
-
 </body>
 </html>
